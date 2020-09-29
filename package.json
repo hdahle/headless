@@ -1,16 +1,18 @@
 {
-  "name": "headless",
+  "name": "imagescraper",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "imagescraper.js",
   "dependencies": {
+    "express": "^4.17.1",
     "fs": "0.0.1-security",
+    "minimist": "^1.2.5",
     "puppeteer": "^5.3.1"
   },
   "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
-  "license": "ISC"
+  "author": "Håkon Dahle",
+  "license": "MIT"
 }

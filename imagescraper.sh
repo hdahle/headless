@@ -3,14 +3,19 @@
 # Input arguments:
 # $1 - html source folder
 # $2 - URL to scrape
+# $3 - Image folder
 
 SOURCE=$1
 JSFILE="cb.js"
-URL=$2
+IMGFOLDER=$2
+URL=$3
 DEST=$(mktemp -d -t scrape-XXXXXXXX)
 
 if [ "$SOURCE" = "" ] ; then
-  echo "Usage: $0 source url"
+  echo "Usage: $0 <source folder> <output folder>  [url]"
+  echo "Example:"
+  echo "  $0 ~/dashboard img"
+  echo "  $0 ~/dashboard img http://localhost:8080"
   exit
 fi
 
@@ -27,6 +32,11 @@ if [ ! "${JSFILE}" ] ; then
   echo "Not found:" ${JSFILE}
 fi
 
+if [ ! -d "${IMGFOLDER}" ] ; then
+  echo "Output image folder does not exist: ${IMGFOLDER}"
+  exit
+fi
+
 # Copy files from HTML folder to local folder
 echo "Copyng files from ${SOURCE} to ${DEST}"
 rmdir ${DEST}
@@ -39,4 +49,4 @@ cp ${JSFILE} ${DEST}/js
 node server.js --folder ${DEST} --selfdestruct &
 
 # Scrape the images
-node imagescraper.js --url ${URL}
+node imagescraper.js --url ${URL} --folder ${IMGFOLDER}

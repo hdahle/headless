@@ -4,6 +4,10 @@ Uses puppeteer to do server side rendering with headless chromium
 
 Scrapes all images with IMG-tag and class="fp-image" from futureplanet.eco, saves each image to file
 
+## Why
+
+The Telegram bot uses the PNG charts
+
 ## Getting Puppeteer to work under WSL2/Ubuntu
 
 Some digging in github discussions revealed that this is required to get stuff working properly:

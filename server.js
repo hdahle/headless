@@ -5,19 +5,39 @@
 // 
 
 const express = require('express');
-const server = express();
-const port = 8080;
-const folder = 'html';
+const app = express();
 
-console.log('Port: ', port)
+// Parse command line, get the name of folder to use
+let argv = require('minimist')(process.argv.slice(2));
+let folder = argv.folder;
+if (!folder) {
+  console.log('Usage: server --folder <folder name> [--port <port>] [--selfdestruct] ');
+  return;
+}
+
+// When --selfdestruct is used, server exits after 30 secs
+let selfdestruct = argv.selfdestruct;
+
+// Configure port number, or 8080 default
+let port = argv.port;
+if (!port) {
+  port = 8080;
+}
+
+// Let's serve some web pages
 console.log('Looking for index.html in folder: ', folder)
-
-server.use(express.static(folder));
-
-server.get("/", (req, res) => {
+app.use(express.static(folder));
+app.get("/", (req, res) => {
   res.send('Server running');
 });
 
-server.listen(port, () => {
-  console.log(`Server listening at ${port}`);
+let server = app.listen(port, () => {
+  console.log('Server listening at: ', port);
+  if (selfdestruct) {
+    setTimeout(() => {
+      server.close(() => {
+        console.log('Server closing')
+      })
+    }, 15000)
+  }
 });

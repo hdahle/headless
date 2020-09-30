@@ -24,7 +24,7 @@ if [ ! -d "${SOURCE}" ] ; then
   exit
 fi
 
-if [ "$URL" = "" ] ; then
+if [ "${URL}" = "" ] ; then
   URL="http://localhost:8080"
 fi
 
@@ -45,7 +45,7 @@ cp -r ${SOURCE} ${DEST}
 # Copy the CB.JS file containing callback code for PNG generation
 cp ${JSFILE} ${DEST}/js
 
-# Start the web-server
+# Run web-server in the background, exit after 30 sec
 node server.js --folder ${DEST} --selfdestruct &
 
 # Scrape the images

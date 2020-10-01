@@ -38,7 +38,7 @@ function main() {
   return new Promise(async (resolve, reject) => {
     try {
       const browser = await puppeteer.launch({
-        headless: true/*,
+        headless: true,
         // For WSL2, found this deep in a github discussion
         ignoreDefaultArgs: ['--disable-extensions'],
         // For WSL2, found this deep in a github discussion
@@ -46,7 +46,7 @@ function main() {
           '--no-sandbox',
           '--no-zygote',
           '--single-process',
-        ]*/
+        ]
       });
       const page = await browser.newPage();
       await page.setViewport({

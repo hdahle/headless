@@ -10,6 +10,7 @@ JSFILE="cb.js"
 IMGFOLDER=$2
 URL=$3
 DEST=$(mktemp -d -t scrape-XXXXXXXX)
+PORT=8081
 
 if [ "$SOURCE" = "" ] ; then
   echo "Usage: $0 <source folder> <output folder>  [url]"
@@ -25,7 +26,7 @@ if [ ! -d "${SOURCE}" ] ; then
 fi
 
 if [ "${URL}" = "" ] ; then
-  URL="http://localhost:8080"
+  URL="http://localhost:${PORT}"
 fi
 
 if [ ! "${JSFILE}" ] ; then
@@ -46,7 +47,7 @@ cp -r ${SOURCE} ${DEST}
 cp ${JSFILE} ${DEST}/js
 
 # Run web-server in the background, exit after 30 sec
-node server.js --folder ${DEST} --selfdestruct &
+node server.js --folder ${DEST} --selfdestruct --port ${PORT} &
 
 # Scrape the images
 node imagescraper.js --url ${URL} --folder ${IMGFOLDER}

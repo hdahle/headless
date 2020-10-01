@@ -50,4 +50,4 @@ cp ${JSFILE} ${DEST}/js
 node server.js --folder ${DEST} --selfdestruct --port ${PORT} &
 
 # Scrape the images
-node imagescraper.js --url ${URL} --folder ${IMGFOLDER}
+node scraper.js --url ${URL} --folder ${IMGFOLDER}

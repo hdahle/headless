@@ -24,3 +24,5 @@ Some digging in github discussions revealed that this is required to get stuff w
         ]
       });
 ````
+## Note
+This has been tested on Ubuntu 16.04 LTS (AWS/Lightsail) and Ubuntu 18.04 LTS (WSL2).

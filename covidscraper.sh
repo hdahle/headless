@@ -8,7 +8,7 @@
 # $1 - html source folder
 # $2 - URL to scrape
 # $3 - Image folder
-#
+# $4 - File/path to node executable
 #
 # H.Dahle, 2020
 
@@ -18,16 +18,20 @@ SRCFOLDER=$1
 IMGFOLDER=$2
 # The URL to scrape, including index.html
 URL=$3
+# Node executable including path
+NODEBIN=$4
+
 
 PORT=8083
 
-if [ "$SRCFOLDER" = "" ] ; then
-  echo "Usage: $0 <source folder> <output folder> <url>"
+if [ "$NODEBIN" = "" ] ; then
+  echo "Usage: $0 <source folder> <output folder> <url> <nodebin>" 
   echo "  <source folder>  Source HTML  folder"
   echo "  <output folder>  Where to write the PNG files"
   echo "  <url>            URL to scrape"
+  echo "  <nodebin>        Full path to node executable"
   echo "Example:"
-  echo "  $0 ~/dashboard img http://localhost:8083/images-index.html "
+  echo "  $0 ~/dashboard img http://localhost:8083/images-index.html /usr/bin/node "
   exit
 fi
 
@@ -41,13 +45,18 @@ if [ ! -d "${IMGFOLDER}" ] ; then
   exit
 fi
 
-if [ ! -f "${URL}" ] ; then
-  echo "File does not exist: ${URL}"
+if [ "${URL}" = "" ] ; then
+  echo "URL to scrape is missing"
+  exit
+fi
+
+if [ ! -f "${NODEBIN}" ] ; then
+  echo "Node.js executable not found at: ${NODEBIN}"
   exit
 fi
 
 # Run web-server in the background, exit after 30 sec
-node server.js --folder ${SRCFOLDER} --selfdestruct --port ${PORT} &
+${NODEBIN} server.js --folder ${SRCFOLDER} --selfdestruct --port ${PORT} &
 
 # Scrape the images
-node scraper.js --url ${URL} --folder ${IMGFOLDER}
+${NODEBIN} scraper.js --url ${URL} --folder ${IMGFOLDER}

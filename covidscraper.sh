@@ -41,7 +41,7 @@ if [ ! -d "${IMGFOLDER}" ] ; then
   exit
 fi
 
-if [ ! -f "${URL}"] ; then
+if [ ! -f "${URL}" ] ; then
   echo "File does not exist: ${URL}"
   exit
 fi

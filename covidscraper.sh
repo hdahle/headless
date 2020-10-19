@@ -21,7 +21,6 @@ URL=$3
 # Node executable including path
 NODEBIN=$4
 
-
 PORT=8083
 
 if [ "$NODEBIN" = "" ] ; then
@@ -59,4 +58,5 @@ fi
 ${NODEBIN} server.js --folder ${SRCFOLDER} --selfdestruct --port ${PORT} &
 
 # Scrape the images
+echo "Mustfix: use of PORT is inconsistent, ugly and just bad"
 ${NODEBIN} scraper.js --url ${URL} --folder ${IMGFOLDER}

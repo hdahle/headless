@@ -21,7 +21,7 @@ URL=$3
 # Node executable including path
 NODEBIN=$4
 
-PORT=8083
+PORT=8081
 
 if [ "$NODEBIN" = "" ] ; then
   echo "Usage: $0 <source folder> <output folder> <url> <nodebin>" 

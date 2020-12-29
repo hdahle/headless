@@ -2,3 +2,7 @@ img/
 node_modules/
 *.png
 js/
+html/
+html
+package-lock.json
+htdocs

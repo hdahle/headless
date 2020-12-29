@@ -61,6 +61,7 @@ console.log('Saving images to: ', folder);
   }
   catch (err) {
     console.log('Unable to open URL:', url);
+    console.log(err)
     process.exit();
   }
 

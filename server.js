@@ -25,7 +25,10 @@ if (!port) {
 }
 
 // Let's serve some web pages
-console.log('Looking for index.html in folder: ', folder)
+console.log('Serving: ', folder);
+console.log('Port: ', port);
+console.log('Selfdestruct: ', selfdestruct);
+
 app.use(express.static(folder));
 app.get("/", (req, res) => {
   res.send('Server running');
@@ -38,6 +41,6 @@ let server = app.listen(port, () => {
       server.close(() => {
         console.log('Server closing')
       })
-    }, 15000)
+    }, 30000)
   }
 });

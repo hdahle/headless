@@ -55,8 +55,10 @@ if [ ! -f "${NODEBIN}" ] ; then
 fi
 
 # Run web-server in the background, exit after 30 sec
+echo "Starting server"
 ${NODEBIN} server.js --folder ${SRCFOLDER} --selfdestruct --port ${PORT} &
+sleep 10
 
 # Scrape the images
-echo "Mustfix: use of PORT is inconsistent, ugly and just bad"
+echo "Starting scraper"
 ${NODEBIN} scraper.js --url ${URL} --folder ${IMGFOLDER}

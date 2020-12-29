@@ -12,7 +12,7 @@ let argv = require('minimist')(process.argv.slice(2));
 let url = argv.url;
 let folder = argv.folder;
 if (!url || !folder) {
-  console.log('Usage: imagescraper --url <server url> --folder <output folder>');
+  console.log('Usage: scraper --url <server url> --folder <output folder>');
   return;
 }
 
@@ -24,12 +24,12 @@ if (url.toLowerCase().indexOf("http://") != 0) {
 
 // Make sure folder is valid
 if (!fs.existsSync(folder)) {
-  console.log('Imagescraper: Folder does not exist:', folder);
+  console.log('Scraper: Folder does not exist:', folder);
   process.exit();
 }
 
-console.log('Using URL: ', url);
-console.log('Output folder: ', folder);
+console.log('Scraping URL: ', url);
+console.log('Saving images to: ', folder);
 
 (async () => {
 

@@ -57,7 +57,10 @@ console.log('Saving images to: ', folder);
 
   try {
     console.log('Trying ', url);
-    await page.goto(url);
+    await page.goto(url, {
+      waitUntil: 'load',
+      timeout: 100000
+    });
   }
   catch (err) {
     console.log('Unable to open URL:', url);

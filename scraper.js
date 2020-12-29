@@ -33,6 +33,8 @@ console.log('Saving images to: ', folder);
 
 (async () => {
 
+  console.log('Starting puppeteer');
+
   // Launch Puppeteer, take care with options for WSL/2
   const browser = await puppeteer.launch({
     headless: true,
@@ -46,6 +48,7 @@ console.log('Saving images to: ', folder);
   });
 
   // Load page, set viewport to optimal size for charts
+  console.log('Set viewport');
   const page = await browser.newPage();
   await page.setViewport({
     width: 990,
@@ -53,6 +56,7 @@ console.log('Saving images to: ', folder);
   });
 
   try {
+    console.log('Trying ', url);
     await page.goto(url);
   }
   catch (err) {

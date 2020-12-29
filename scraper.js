@@ -45,12 +45,16 @@ console.log('Output folder: ', folder);
     ]
   });
 
+  console.log(browser)
+
   // Load page, set viewport to optimal size for charts
   const page = await browser.newPage();
   await page.setViewport({
     width: 990,
     height: 800
   });
+
+  console.log(page)
 
   try {
     await page.goto(url);

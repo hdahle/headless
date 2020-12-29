@@ -11,12 +11,17 @@ const app = express();
 let argv = require('minimist')(process.argv.slice(2));
 let folder = argv.folder;
 if (!folder) {
-  console.log('Usage: server --folder <folder name> [--port <port>] [--selfdestruct] ');
+  console.log('Usage: server --folder <folder name> [--port <port>] [--selfdestruct <seconds>] ');
   return;
 }
 
-// When --selfdestruct is used, server exits after 30 secs
+// When --selfdestruct is used, server exits after XX secs
 let selfdestruct = argv.selfdestruct;
+let timeout = 60;
+
+if (selfdestruct !== undefined && selfdestruct !== true) {
+  timeout = parseInt(selfdestruct, 10);
+}
 
 // Configure port number, or 8080 default
 let port = argv.port;
@@ -25,9 +30,10 @@ if (!port) {
 }
 
 // Let's serve some web pages
-console.log('Serving: ', folder);
-console.log('Port: ', port);
-console.log('Selfdestruct: ', selfdestruct === undefined ? 'No' : 'Yes');
+console.log('Serving:', folder);
+console.log('Port:', port);
+console.log('Selfdestruct:', selfdestruct ? 'Yes' : 'No');
+console.log('Timeout:', timeout);
 
 // This snippet replaces the existing cb.js file
 app.get("/js/cb.js", (req, res) => {
@@ -53,6 +59,6 @@ let server = app.listen(port, () => {
       server.close(() => {
         console.log('Server closing')
       })
-    }, 30000)
+    }, 1000 * timeout)
   }
 });

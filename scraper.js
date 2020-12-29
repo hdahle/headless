@@ -55,11 +55,12 @@ console.log('Saving images to: ', folder);
     height: 800
   });
 
+  // Open the URL, set a loooong timeout - the 30sec default is too short
   try {
-    console.log('Trying ', url);
+    console.log('Trying:', url);
     await page.goto(url, {
       waitUntil: 'load',
-      timeout: 100000
+      timeout: 120000
     });
   }
   catch (err) {

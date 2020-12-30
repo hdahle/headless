@@ -15,7 +15,7 @@ const path = require('path');
 // Parse command line
 let argv = require('minimist')(process.argv.slice(2), {
   string: ['src', 'url', 'output', 'port'],
-  default: { port: '8080' },
+  default: { src: '', url: '', output: '', port: '8080' },
   alias: { folder: 'src', o: 'output', p: 'port', s: 'src', u: 'url' },
   unknown: (x) => { console.log('imagescraper: Unknown argument', x); process.exit() }
 });

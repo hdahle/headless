@@ -12,42 +12,44 @@ const fs = require('fs');
 const puppeteer = require('puppeteer');
 const path = require('path');
 
+let argErr = 0;
+
 // Parse command line
 let argv = require('minimist')(process.argv.slice(2), {
   string: ['src', 'url', 'output', 'port'],
   default: { src: '', url: '', output: '', port: '8080' },
   alias: { folder: 'src', o: 'output', p: 'port', s: 'src', u: 'url' },
-  unknown: (x) => { console.log('imagescraper: Unknown argument', x); process.exit() }
+  unknown: (x) => { console.log('imagescraper: Unknown argument', x); ++argErr; }
 });
 
 let srcDir = argv.src;
 let url = argv.url;
 let outputDir = argv.output;
 
-// Make sure required args are specified
-if (!srcDir.length || !outputDir.length || !url.length) {
-  console.log('Usage: imagescraper --src <source dir> --output <output dir> --url <url> [--port <port>]');
-  return;
-}
 // Make sure URL seems valid
 if (url.toLowerCase().indexOf("http://") != 0) {
   console.log("imagescraper: URL should start with 'http://'")
-  return;
+  ++argErr;
 }
 // Make sure source directory is valid
 if (!fs.existsSync(srcDir)) {
   console.log('imagescraper: Source directory does not exist:', srcDir);
-  return;
+  ++argErr;
 }
 // Make sure output directory is valid
 if (!fs.existsSync(outputDir)) {
   console.log('imagescraper: Output directory does not exist:', outputDir);
-  return;
+  ++argErr;
 }
 // Configure port number, or 8080 default as specified in minimist options
 let port = parseInt(argv.port, 10);
 if (isNaN(port) || port < 1024 || port > 65535) {
   console.log('imagescraper: Invalid port number')
+  ++argErr;
+}
+
+if (argErr) {
+  console.log('Usage: imagescraper --src <source dir> --output <output dir> --url <url> [--port <port>]');
   return;
 }
 

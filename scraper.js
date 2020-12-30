@@ -1,3 +1,4 @@
+//
 // Scrape Futureplanet for PNGs
 // Heavily inspired by https://www.toptal.com/puppeteer/headless-browser-puppeteer-tutorial
 //

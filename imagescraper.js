@@ -26,11 +26,6 @@ let srcDir = argv.src;
 let url = argv.url;
 let outputDir = argv.output;
 
-// Make sure URL seems valid
-if (url.toLowerCase().indexOf("http://") != 0) {
-  console.log("imagescraper: URL should start with 'http://'")
-  ++argErr;
-}
 // Make sure source directory is valid
 if (!fs.existsSync(srcDir)) {
   console.log('imagescraper: Source directory does not exist:', srcDir);
@@ -41,18 +36,23 @@ if (!fs.existsSync(outputDir)) {
   console.log('imagescraper: Output directory does not exist:', outputDir);
   ++argErr;
 }
+// Make sure URL seems valid
+if (url.toLowerCase().indexOf("http://") != 0) {
+  console.log("imagescraper: URL should start with 'http://'")
+  ++argErr;
+}
 // Configure port number, or 8080 default as specified in minimist options
 let port = parseInt(argv.port, 10);
 if (isNaN(port) || port < 1024 || port > 65535) {
   console.log('imagescraper: Invalid port number')
   ++argErr;
 }
-
+// Abort if error(s)
 if (argErr) {
   console.log('Usage: imagescraper --src <source dir> --output <output dir> --url <url> [--port <port>]');
   return;
 }
-
+// Proceed, we're all good
 console.log('Serving from folder:', srcDir);
 console.log('Port:', port);
 console.log('Saving images to:', outputDir);

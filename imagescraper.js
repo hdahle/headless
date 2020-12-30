@@ -12,14 +12,21 @@ const fs = require('fs');
 const puppeteer = require('puppeteer');
 const path = require('path');
 
-// Parse command line, get the name of folder to use
-let argv = require('minimist')(process.argv.slice(2));
-let folder = argv.folder;
-let url = argv.url;
-let outputFolder = argv.output;
+// Parse command line
+let argv = require('minimist')(process.argv.slice(2), {
+  string: ['src', 'url', 'output', 'port'],
+  default: { port: '8080' },
+  alias: { folder: 'src', o: 'output', p: 'port', s: 'src', u: 'url' },
+  unknown: (x) => { console.log('imagescraper: Unknown argument', x); process.exit() }
+});
 
-if (!folder || !outputFolder || !url) {
-  console.log('Usage: imagescraper --folder <folder name> --output <output folder> --url <url> [--port <port>]');
+let srcDir = argv.src;
+let url = argv.url;
+let outputDir = argv.output;
+
+// Make sure required args are specified
+if (!srcDir.length || !outputDir.length || !url.length) {
+  console.log('Usage: imagescraper --src <source dir> --output <output dir> --url <url> [--port <port>]');
   return;
 }
 // Make sure URL seems valid
@@ -27,24 +34,26 @@ if (url.toLowerCase().indexOf("http://") != 0) {
   console.log("imagescraper: URL should start with 'http://'")
   return;
 }
-// Make sure folder is valid
-if (!fs.existsSync(folder)) {
-  console.log('imagescraper: Source folder does not exist:', folder);
+// Make sure source directory is valid
+if (!fs.existsSync(srcDir)) {
+  console.log('imagescraper: Source directory does not exist:', srcDir);
   return;
 }
-// Make sure folder is valid
-if (!fs.existsSync(outputFolder)) {
-  console.log('imagescraper: Output folder does not exist:', outputFolder);
+// Make sure output directory is valid
+if (!fs.existsSync(outputDir)) {
+  console.log('imagescraper: Output directory does not exist:', outputDir);
   return;
 }
-// Configure port number, or 8080 default
-let port = argv.port;
-if (!port) {
-  port = 8080;
+// Configure port number, or 8080 default as specified in minimist options
+let port = parseInt(argv.port, 10);
+if (isNaN(port) || port < 1024 || port > 65535) {
+  console.log('imagescraper: Invalid port number')
+  return;
 }
-console.log('Serving from folder:', folder);
+
+console.log('Serving from folder:', srcDir);
 console.log('Port:', port);
-console.log('Saving images to:', outputFolder);
+console.log('Saving images to:', outputDir);
 console.log('Scraping URL:', url);
 
 // Special case: This snippet replaces the existing cb.js file
@@ -62,19 +71,18 @@ app.get("/js/cb.js", (req, res) => {
 });
 
 // General case: Serve any files from folder
-app.use(express.static(folder));
+app.use(express.static(srcDir));
 // Start server, then start scraper
 let server = app.listen(port, async () => {
   console.log('Server listening at: ', port);
-  await scrape(url, outputFolder);
+  await scrape(url, outputDir);
   server.close(() => {
     console.log('Server closed');
   })
 });
 
-// The imagescraper
-// Start puppeteer, open URL, parse the DOM, extract images, save images
-async function scrape(url, outputFolder) {
+// Scrape: Start puppeteer, open URL, parse the DOM, extract images, save images
+async function scrape(url, outputDir) {
   console.log('Starting puppeteer');
   // Launch Puppeteer, take care with options for WSL/2
   const browser = await puppeteer.launch({
@@ -84,7 +92,7 @@ async function scrape(url, outputFolder) {
     args: [
       '--no-sandbox',
       '--no-zygote',
-      '--single-process',
+      '--single-process'
     ]
   });
   // Load page, set viewport to optimal size for charts
@@ -111,7 +119,6 @@ async function scrape(url, outputFolder) {
   let images = await page.evaluate(() => {
     return Array.from(document.querySelectorAll('img.fp-image'), (e) => ({
       id: e.getAttribute('id'),
-      class: e.getAttribute('class'),
       src: e.getAttribute('src')
     }));
   })
@@ -123,7 +130,7 @@ async function scrape(url, outputFolder) {
     const fileName = image.id.replace('-canvas', '').replace('-png', '') + '.png';
     console.log('Saving:', fileName)
     try {
-      fs.writeFileSync(path.join(outputFolder, fileName), bitmap);
+      fs.writeFileSync(path.join(outputDir, fileName), bitmap);
     }
     catch (err) {
       console.log('Error writing file:', fileName, err);

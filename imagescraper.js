@@ -28,8 +28,13 @@ if (url.toLowerCase().indexOf("http://") != 0) {
   return;
 }
 // Make sure folder is valid
+if (!fs.existsSync(folder)) {
+  console.log('imagescraper: Source folder does not exist:', folder);
+  return;
+}
+// Make sure folder is valid
 if (!fs.existsSync(outputFolder)) {
-  console.log('imagescraper: Folder does not exist:', outputFolder);
+  console.log('imagescraper: Output folder does not exist:', outputFolder);
   return;
 }
 // Configure port number, or 8080 default

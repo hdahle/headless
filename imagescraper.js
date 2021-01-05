@@ -121,7 +121,7 @@ async function scrape(url, outputDir) {
 
   // Evaluate the page, extract all images
   let images = await page.evaluate(() => {
-    return Array.from(document.querySelectorAll('img.fp-image'), e => ({ id: e.getAttribute('id'), src: e.getAttribute('src') }));
+    return Array.from(document.querySelectorAll('img.fp-image'), e => ({ id: e.getAttribute('id'), src: e.getAttribute('src') })).slice(1, 5);
   })
 
   await browser.close();

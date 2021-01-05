@@ -74,6 +74,7 @@ app.get("/js/cb.js", (req, res) => {
 
 // General case: Serve any files from folder
 app.use(express.static(srcDir));
+
 // Start server, then start scraper
 let server = app.listen(port, async () => {
   console.log('Server listening at: ', port);
@@ -109,41 +110,41 @@ async function scrape(url, outputDir) {
   try {
     await page.goto(url, {
       waitUntil: 'load',
-      timeout: 120000
+      timeout: 180000
     });
-  }
-  catch (err) {
-    console.log('Unable to open URL:', url);
+  } catch (e) {
+    console.log('Unable to open URL:', url, e);
     await browser.close();
-    return;
+    process.exit(1);
   }
+  console.log('URL opened successfully');
+
   // Evaluate the page, extract all images
   let images = await page.evaluate(() => {
-    return Array.from(document.querySelectorAll('img.fp-image'), (e) => ({
-      id: e.getAttribute('id'),
-      src: e.getAttribute('src')
-    }));
+    return Array.from(document.querySelectorAll('img.fp-image'), e => ({ id: e.getAttribute('id'), src: e.getAttribute('src') }));
   })
+
+  await browser.close();
+
   // Save all images, base filename on 'id' tag
   console.log('Images found:', images.length);
-  images.forEach(async (image) => {
-    const data = image.src.replace(/^data:image\/\w+;base64,/, '');  // remove file meta-data
-    const bitmap = new Buffer.from(data, 'base64'); // convert to Buffer for saving
+
+  images.forEach(image => {
+    // images.src starts with the following
+    // data:image/png;base64,iVBORw0KGgoAAAANSUhE.......
+    // We need to remove the preamble 'data:image/png;base64,' and just keep the base64 encoded data
+    const data = image.src.replace(/^data:image\/\w+;base64,/, '');
+    const bitmap = Buffer.from(data, 'base64'); // convert to Buffer for saving
     const fileName = image.id.replace('-canvas', '').replace('-png', '') + '.png';
     console.log('Saving:', fileName)
     try {
       fs.writeFileSync(path.join(outputDir, fileName), bitmap);
     }
-    catch (err) {
-      console.log('Error writing file:', fileName, err);
-      await browser.close();
-      return;
+    catch (e) {
+      console.log('Error writing file:', fileName, e);
     }
   });
 
   // We're done
   console.log('Scraping done');
-  await browser.close();
 }
-
-

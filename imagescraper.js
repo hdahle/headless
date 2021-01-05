@@ -102,7 +102,7 @@ async function scrape(url, outputDir) {
   console.log('Set viewport');
   const page = await browser.newPage();
   await page.setViewport({
-    width: 990,
+    width: 800,
     height: 800
   });
   // Open the URL, set a loooong timeout - the 30sec default is too short
@@ -121,7 +121,7 @@ async function scrape(url, outputDir) {
 
   // Evaluate the page, extract all images
   let images = await page.evaluate(() => {
-    return Array.from(document.querySelectorAll('img.fp-image'), e => ({ id: e.getAttribute('id'), src: e.getAttribute('src') })).slice(1, 5);
+    return Array.from(document.querySelectorAll('img.fp-image'), e => ({ id: e.getAttribute('id'), src: e.getAttribute('src') }))//.slice(1, 5);
   })
 
   await browser.close();

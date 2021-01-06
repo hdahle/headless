@@ -102,7 +102,7 @@ async function scrape(url, outputDir) {
   console.log('Set viewport');
   const page = await browser.newPage();
   await page.setViewport({
-    width: 800,
+    width: 990,
     height: 800
   });
   // Open the URL, set a loooong timeout - the 30sec default is too short
